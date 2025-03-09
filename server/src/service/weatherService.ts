@@ -66,10 +66,6 @@ class WeatherService {
     const { main, weather, wind } = response;
     return new Weather(main.temp, weather[0].description, main.humidity, wind.speed);
   }
-  // TODO: Complete buildForecastArray method
-  private buildForecastArray(currentWeather: Weather, weatherData: any[]): Weather[] {
-    return weatherData.map(data => this.parseCurrentWeather(data));
-  }
   // TODO: Complete getWeatherForCity method
   async getWeatherForCity(city: string): Promise<Weather> {
     this.cityName = city;

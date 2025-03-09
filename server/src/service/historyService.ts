@@ -16,12 +16,13 @@ class HistoryService {
       const data = await fs.readFile(this.filePath, 'utf-8');
       return JSON.parse(data);
     } catch (error) {
-      if (error.code === 'ENOENT') {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         return [];
       }
       throw error;
     }
   }
+
 
   // TODO: Define a write method that writes the updated cities array to the searchHistory.json file
   private async write(cities: City[]): Promise<void> {
