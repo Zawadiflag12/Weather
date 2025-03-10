@@ -1,5 +1,10 @@
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import path from 'path';
+import { promises as fs } from 'fs';
+import { fileURLToPath } from 'url';
+
+// Define __filename and __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // TODO: Define a City class with name and id properties
 class City {
@@ -11,6 +16,8 @@ class HistoryService {
   private filePath: string;
 
   constructor() {
+
+// TODO: Define a City class with name and id properties
     this.filePath = path.join(__dirname, '..', 'service', 'searchHistory.json');
   }
 
