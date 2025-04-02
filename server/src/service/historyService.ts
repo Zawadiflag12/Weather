@@ -49,7 +49,7 @@ class HistoryService {
   // TODO Define an addCity method that adds a city to the searchHistory.json fil
   async addCity(name: string): Promise<void> {
     const cities = await this.read();
-    const id = (cities.length + 1).toString();
+    const id = Date.now().toString();
     const newCity = new City(id, name);
     cities.push(newCity);
     await this.write(cities);

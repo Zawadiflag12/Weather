@@ -9,16 +9,24 @@ interface Coordinates {
 }
 // TODO: Define a class for the Weather object
 class Weather {
-  temperature: number;
+  tempF: number;
   description: string;
   humidity: number;
   windSpeed: number;
+  date: string; 
+  icon: string; 
+  iconDescription: string;
+  city: string;
 
-  constructor(temperature: number, description: string, humidity: number, windSpeed: number) {
-    this.temperature = temperature;
+  constructor(tempF: number, description: string, humidity: number, windSpeed: number,   date: string, icon: string, iconDescription: string, city: string) {
+    this.tempF = tempF;
     this.description = description;
     this.humidity = humidity;
     this.windSpeed = windSpeed;
+    this.date = date;
+    this.icon = icon;
+    this.iconDescription = iconDescription;
+    this.city = city;
   }
 }
 
@@ -29,8 +37,8 @@ class WeatherService {
   private cityName: string;
   // TODO: Define the baseURL, API key, and city name properties
   constructor() {
-    this.baseURL = 'https://api.openweathermap.org/data/2.5';
-    this.apiKey = process.env.WEATHER_API_KEY || '';
+    this.baseURL = process.env.API_BASE_URL || '';
+    this.apiKey = process.env.API_KEY || '';
     this.cityName = '';
   }
   // TODO: Create fetchLocationData method
@@ -49,7 +57,7 @@ class WeatherService {
   }
   // TODO: Create buildWeatherQuery method
   private buildWeatherQuery(coordinates: Coordinates): string {
-    return `${this.baseURL}/weather?lat=${coordinates.latitude}&lon=${coordinates.longitude}&appid=${this.apiKey}`;
+    return `${this.baseURL}/data/2.5/forecast?lat=${coordinates.latitude}&lon=${coordinates.longitude}&appid=${this.apiKey}&units=imperial`;
   }
   // TODO: Create fetchAndDestructureLocationData method
   private async fetchAndDestructureLocationData(): Promise<Coordinates> {
@@ -62,12 +70,39 @@ class WeatherService {
     return response.json();
   }
   // TODO: Build parseCurrentWeather method
-  private parseCurrentWeather(response: any): Weather {
-    const { main, weather, wind } = response;
-    return new Weather(main.temp, weather[0].description, main.humidity, wind.speed);
+  private parseCurrentWeather(response: any): Weather[] {
+    const {city, list } = response;
+    const weatherArray: Weather[] = [];
+  
+    for (let i = 0; i < list.length; i += 8) {
+      
+      const timestamp = list[i].dt;
+      const date = new Date(timestamp * 1000)
+      const options: Intl.DateTimeFormatOptions = { weekday: 'long' }
+      const dayOfWeek = date.toLocaleDateString('en-US', options);
+      const icon = list[i].weather[0].icon;
+      const iconDescription = list[i].weather[0].description;
+      
+      weatherArray.push(
+        new Weather(
+          list[i].main.temp,                  
+          list[i].weather[0].description,  
+          list[i].main.humidity,        
+          list[i].wind.speed,         
+          dayOfWeek,                   
+          icon,                        
+          iconDescription,
+          city.name   
+        )
+      );
+    }
+  
+    return city && weatherArray;
   }
+  
+  
   // TODO: Complete getWeatherForCity method
-  async getWeatherForCity(city: string): Promise<Weather> {
+  async getWeatherForCity(city: string): Promise<Weather[]> {
     this.cityName = city;
     const coordinates = await this.fetchAndDestructureLocationData();
     const weatherData = await this.fetchWeatherData(coordinates);

@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const router = Router();
 
 router.get('/', (_, res) => {
-  res.sendFile(path.resolve(__dirname, '../../client/public/src/index.html'));
+  res.sendFile(path.resolve(__dirname, '../../../client/dist/index.html'));
 });
 
 
