@@ -8,7 +8,13 @@ const __dirname = path.dirname(__filename);
 
 // TODO: Define a City class with name and id properties
 class City {
-  constructor(public id: string, public name: string) { }
+  id: string;
+  name: string;
+  
+  constructor( id: string,  name: string) {
+    this.id = id;
+    this.name = name;
+   }
 }
 
 // TODO: Complete the HistoryService class
@@ -17,7 +23,6 @@ class HistoryService {
 
   constructor() {
 
-// TODO: Define a City class with name and id properties
     this.filePath = path.join(__dirname, '..', 'service', 'searchHistory.json');
   }
 
